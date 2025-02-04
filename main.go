@@ -141,12 +141,17 @@ type Walking struct {
 // Это переопределенный метод Calories() из Training.
 func (w Walking) Calories() float64 {
 	// вставьте ваш код ниже
+	if w.Height == 0 {
+		return 0
+	}
+
 	meanSpeed := w.meanSpeed()
 	speedMsec := meanSpeed * KmHInMsec
 	heightInM := w.Height / CmInM
 	calories := ((CaloriesWeightMultiplier*w.Weight +
 		math.Pow(speedMsec, 2)/heightInM*CaloriesSpeedHeightMultiplier*w.Weight) *
 		w.Duration.Hours() * MinInHours)
+
 	return calories
 }
 
@@ -198,7 +203,13 @@ func (s Swimming) Calories() float64 {
 // Это переопределенный метод TrainingInfo() из Training.
 func (s Swimming) TrainingInfo() InfoMessage {
 	// вставьте ваш код ниже
-	return s.Training.TrainingInfo()
+	return InfoMessage{
+		TrainingType: s.TrainingType,
+		Duration:     s.Duration,
+		Distance:     s.distance(),
+		Speed:        s.meanSpeed(),
+		Calories:     s.Calories(),
+	}
 }
 
 // ReadData возвращает информацию о проведенной тренировке.
